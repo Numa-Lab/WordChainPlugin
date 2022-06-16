@@ -50,8 +50,8 @@ class ChatProcess(val conf: WordChainConfig) {
                             val r = it?.converted
                             println("Converted: $r")
                             if (r != null) {
-                                val first = getFirstHiragana(r)
-                                val last = getLastHiragana(r)
+                                val first = getFirstHiraganaFromString(r)
+                                val last = getLastHiraganaFromString(r)
 
                                 println("First Hiragana:${first}")
                                 println("Last Hiragana:${last}")
