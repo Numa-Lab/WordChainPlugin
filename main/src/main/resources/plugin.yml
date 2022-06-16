@@ -1,0 +1,5 @@
+name: WordChain
+version: '${project.version}'
+main: com.github.bun133.wordchain.WordChain
+api-version: 1.16
+authors: [ Bun133 ]
