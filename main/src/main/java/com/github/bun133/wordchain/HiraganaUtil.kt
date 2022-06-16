@@ -30,6 +30,8 @@ fun getFirstHiraganaFromString(str: String): Char? {
 fun forceLargeHiragana(char: Char): Char? {
     return if (smallHiraganaToLargeHiragana.containsKey(char)) {
         smallHiraganaToLargeHiragana[char]
+    } else if (dakutenToKana.contains(char)) {
+        dakutenToKana[char]
     } else if (hiragana.contains(char)) {
         char
     } else {
@@ -49,6 +51,41 @@ val smallHiraganaToLargeHiragana = mapOf<Char, Char>(
     'ょ' to 'よ',
     'っ' to 'つ',
     'ゎ' to 'わ'
+)
+
+// 濁点 + 半濁点 to 清音
+@Suppress("SpellCheckingInspection")
+val dakutenToKana = mapOf<Char, Char>(
+    'が' to 'か',
+    'ぎ' to 'き',
+    'ぐ' to 'く',
+    'げ' to 'け',
+    'ご' to 'こ',
+    'ざ' to 'さ',
+    'じ' to 'し',
+    'ず' to 'す',
+    'ぜ' to 'せ',
+    'ぞ' to 'そ',
+    'だ' to 'た',
+    'ぢ' to 'ち',
+    'づ' to 'つ',
+    'で' to 'て',
+    'ど' to 'と',
+    'ば' to 'は',
+    'び' to 'ひ',
+    'ぶ' to 'ふ',
+    'べ' to 'へ',
+    'ぼ' to 'ほ',
+    'ば' to 'は',
+    'ぴ' to 'ひ',
+    'ぶ' to 'ふ',
+    'べ' to 'へ',
+    'ぼ' to 'ほ',
+    'ぱ' to 'は',
+    'ぴ' to 'ひ',
+    'ぷ' to 'ふ',
+    'ぺ' to 'へ',
+    'ぽ' to 'ほ',
 )
 
 // ひらがな全部
