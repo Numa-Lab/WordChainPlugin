@@ -2,7 +2,9 @@ package com.github.bun133.wordchain
 
 import com.github.bun133.bukkitfly.component.plus
 import com.github.bun133.bukkitfly.component.text
+import com.github.bun133.bukkitfly.server.plugin
 import com.github.bun133.tinked.RunnableTask
+import com.github.bun133.tinked.WaitTask
 import com.github.bun133.wordchain.axios.GooRequest
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.TextComponent
@@ -10,6 +12,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -60,27 +63,43 @@ class ChatProcess(val conf: WordChainConfig) {
                                     // ちゃんとしたチャット
                                     if (final == null || final == first) {
                                         // 前のチャットの最後の文字と、このチャットの最初の文字が合っていたら
-                                        final = last
 
+                                        // チャットを送信
                                         Bukkit.broadcast(
                                             text("[") + chat.sender.displayName() + text("] ") + chat.message.hoverEvent(
                                                 HoverEventSource { HoverEvent.showText(text("ひらがな変換:$r")) })
                                         )
 
+                                        if (last == 'ん') {
+                                            // 最後の文字がんだったら
+                                            treatFailPlayer(
+                                                conf.toBANPlayer.value(),
+                                                chat.sender,
+                                                conf.toPrintBAN.value()
+                                            )
+                                        } else {
+                                            // 最後の文字がんでなかったら
+                                            // 前回のチャットの最後の文字を更新
+                                            final = last
+                                        }
+
+                                        // ヒントを表示
                                         if (conf.toPrintLastChar.value()) {
                                             Bukkit.broadcast(text("最後の文字は「${final}」", NamedTextColor.GREEN))
                                         }
                                     } else {
                                         // 前のチャットの最後の文字と、このチャットの最初の文字が合っていなかったら
-                                        chat.sender.sendMessage(text("しりとりがつながりませんでした", NamedTextColor.RED))
+                                        chat.sender.sendMessage(text("しりとりがつながりませんでした", NamedTextColor.LIGHT_PURPLE))
                                     }
                                 } else {
                                     //日本語に変換不能なチャット
-                                    chat.sender.sendMessage(text("ひらがなに変換できませんでした", NamedTextColor.RED))
+                                    chat.sender.sendMessage(text("ひらがなに変換できませんでした", NamedTextColor.YELLOW))
                                 }
-
-                                isSyncing = false
+                            } else {
+                                // 変換失敗
+                                chat.sender.sendMessage(text("ひらがなに変換できませんでした", NamedTextColor.YELLOW))
                             }
+                            isSyncing = false
                         })
                     }.run(Unit)
             }.also { println("Converted Time: $it") }
@@ -89,4 +108,15 @@ class ChatProcess(val conf: WordChainConfig) {
             println("Failed: ${chat.message}")
         }
     }
+}
+
+// んを最後に着けてしまった馬鹿者をBANする
+fun treatFailPlayer(treat: FailTreat, player: Player, toPrintBan: Boolean) {
+    // AsyncでPlayer Kickとか出来ないみたいなので...
+    WaitTask<Unit>(1L, plugin()!!).apply(RunnableTask {
+        treat.treat(player)
+        if (toPrintBan) {
+            Bukkit.broadcast(player.displayName() + text("が最後に「ん」をつけました", NamedTextColor.RED))
+        }
+    }).run(Unit)
 }

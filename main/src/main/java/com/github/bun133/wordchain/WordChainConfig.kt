@@ -21,6 +21,9 @@ class WordChainConfig(plugin: Plugin) : BaseConfig(plugin) {
 
     // 前のチャットの最後のひらがなのヒントを出力するかどうか
     val toPrintLastChar = BooleanValue(true)
+
+    // んを最後につけてBANされた人を全体に通知するチャットを送信するかどうか
+    val toPrintBAN = BooleanValue(true)
 }
 
 enum class FailTreat(val treat: (Player) -> Unit) {
