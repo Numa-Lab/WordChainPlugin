@@ -66,7 +66,7 @@ class ChatProcess(val conf: WordChainConfig) {
 
                                         // チャットを送信
                                         Bukkit.broadcast(
-                                            text("[") + chat.sender.displayName() + text("] ") + chat.message.hoverEvent(
+                                            text("<") + chat.sender.displayName() + text("> ") + chat.message.hoverEvent(
                                                 HoverEventSource { HoverEvent.showText(text("ひらがな変換:$r")) })
                                         )
 
