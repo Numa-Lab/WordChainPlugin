@@ -51,13 +51,9 @@ class ChatProcess(val conf: WordChainConfig) {
                     .apply {
                         then(RunnableTask {
                             val r = it?.converted
-                            println("Converted: $r")
                             if (r != null) {
                                 val first = getFirstHiraganaFromString(r)
                                 val last = getLastHiraganaFromString(r)
-
-                                println("First Hiragana:${first}")
-                                println("Last Hiragana:${last}")
 
                                 if (first != null && last != null) {
                                     // ちゃんとしたチャット
@@ -102,7 +98,7 @@ class ChatProcess(val conf: WordChainConfig) {
                             isSyncing = false
                         })
                     }.run(Unit)
-            }.also { println("Converted Time: $it") }
+            }
         } else {
             // Failed
             println("Failed: ${chat.message}")

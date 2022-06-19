@@ -17,7 +17,6 @@ class AxiosTask(val url: String, val parameters: Parameters) : Task<Unit, GooRes
             .responseObject<GooResponse>(gsonDeserializer()) { _, res, result ->
                 when (result) {
                     is Result.Success -> {
-                        println("Success")
                         nextNode?.run(result.value)
                     }
                     is Result.Failure -> {
